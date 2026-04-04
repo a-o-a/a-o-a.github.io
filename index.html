@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
 
   <style>
+    /* =============================================
+       0. CSS Variables (Theming & Maintenance)
+       ============================================= */
+    :root {
+      --bg-color: #1a1a1a;
+      --text-main: #ffffff;
+      --text-dim: #a8a8a8;
+      --sun-core: #fff8dc;
+      --sun-mid: #ffd700;
+      --sun-edge: #ffa500;
+      --wave-1: rgba(100, 160, 220, 0.25);
+      --wave-2: rgba(80, 140, 190, 0.2);
+      --wave-3: rgba(60, 120, 160, 0.15);
+      --transition-speed: 6s;
+    }
+
     /* =============================================
        1. 기본 리셋 및 전역 스타일
        ============================================= */
@@ -30,10 +46,12 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: #1a1a1a;
+      background: var(--bg-color);
       font-family: 'Space Grotesk', sans-serif;
       overflow: hidden;
       position: relative;
+      /* GPU 가속 힌트 */
+      backface-visibility: hidden;
     }
 
     /* =============================================
@@ -49,7 +67,6 @@
       position: absolute;
       top: -20%;
       left: 60%;
-      transform: translateX(-50%);
       width: 120%;
       height: 60%;
       background: radial-gradient(
@@ -59,8 +76,9 @@
         rgba(180, 50, 120, 0.12) 45%,     /* 외곽: 퍼플 */
         transparent 75%                    /* 끝: 투명 */
       );
-      animation: sunsetPulse 6s ease-in-out infinite;
+      animation: sunsetPulse var(--transition-speed) ease-in-out infinite;
       pointer-events: none;
+      will-change: transform, opacity;
     }
 
     /*
@@ -72,7 +90,7 @@
       position: absolute;
       top: 0;
       left: 60%;
-      transform: translateX(-50%);
+      transform: translate3d(-50%, 0, 0);
       width: 40%;
       height: 100%;
       background: radial-gradient(
@@ -80,13 +98,13 @@
         rgba(255, 200, 100, 0.15) 0%,
         transparent 60%
       );
-      animation: sunCore 6s ease-in-out infinite;
+      animation: sunCore var(--transition-speed) ease-in-out infinite;
     }
 
-    /* 노을 일렁임 — 투명도 0.8~1, 크기 1~1.05배 */
+    /* 노을 일렁임 — 투명도 0.8~1, 크기 1~1.05배 (GPU 가속 적용) */
     @keyframes sunsetPulse {
-      0%, 100% { opacity: 0.8; transform: translateX(-50%) scale(1); }
-      50% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+      0%, 100% { opacity: 0.8; transform: translate3d(-50%, 0, 0) scale(1); }
+      50% { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1.05); }
     }
 
     /* 골든 코어 점멸 — 투명도 0.6~1 */
@@ -112,6 +130,7 @@
       background: rgba(255, 255, 255, 0.07);
       filter: blur(8px);
       pointer-events: none;
+      will-change: transform;
     }
 
     .cloud::before,
@@ -120,7 +139,6 @@
       position: absolute;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.06);
-      filter: blur(6px);
     }
 
     /* 구름 왼쪽 봉우리 */
@@ -163,21 +181,20 @@
     }
 
     /*
-     * 구름 떠다니기 애니메이션
+     * 구름 떠다니기 애니메이션 (GPU 가속 적용)
      * 화면 왼쪽 밖(-구름너비)에서 시작해 오른쪽 끝(100vw)까지 이동
-     * 각 구름마다 시작 너비가 달라 키프레임 값도 개별 설정
      */
     @keyframes cloudDrift1 {
-      0% { left: -260px; }
-      100% { left: 100vw; }
+      0% { transform: translate3d(-260px, 0, 0); }
+      100% { transform: translate3d(100vw, 0, 0); }
     }
     @keyframes cloudDrift2 {
-      0% { left: -200px; }
-      100% { left: 100vw; }
+      0% { transform: translate3d(-200px, 0, 0); }
+      100% { transform: translate3d(100vw, 0, 0); }
     }
     @keyframes cloudDrift3 {
-      0% { left: -180px; }
-      100% { left: 100vw; }
+      0% { transform: translate3d(-180px, 0, 0); }
+      100% { transform: translate3d(100vw, 0, 0); }
     }
 
     /* =============================================
@@ -194,21 +211,22 @@
       position: absolute;
       top: 5%;
       left: 60%;
-      transform: translate(-50%, 0);
       width: 48px;
       height: 48px;
       border-radius: 50%;
       background: radial-gradient(
         circle,
-        #fff8dc 0%,     /* 중심: 크림색 */
-        #ffd700 60%,    /* 중간: 골드 */
-        #ffa500 100%    /* 가장자리: 오렌지 */
+        var(--sun-core) 0%,     /* 중심: 크림색 */
+        var(--sun-mid) 60%,    /* 중간: 골드 */
+        var(--sun-edge) 100%    /* 가장자리: 오렌지 */
       );
       box-shadow:
         0 0 20px 8px rgba(255, 180, 80, 0.25),    /* 안쪽 글로우 */
         0 0 50px 15px rgba(255, 140, 60, 0.1);    /* 바깥 글로우 */
-      animation: sunGlow 6s ease-in-out infinite;
+      animation: sunGlow var(--transition-speed) ease-in-out infinite;
       pointer-events: none;
+      transform: translate3d(-50%, 0, 0);
+      will-change: box-shadow, opacity;
     }
 
     /* 해 글로우 애니메이션 — 그림자 크기와 투명도 변화 */
@@ -228,7 +246,7 @@
        ============================================= */
 
     /*
-     * .wave-container — 화면 하단 20%를 차지하는 파도 영역
+     * .wave-container — 화면 하단 25%를 차지하는 파도 영역
      * 각 SVG는 파도 모양의 경로(path)를 그리며,
      * 서로 다른 색상·투명도·속도로 좌우 이동해 일렁이는 바다 효과
      */
@@ -237,15 +255,17 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 20%;
+      height: 25vh; /* 모바일 반응형 높이 */
       pointer-events: none;
+      overflow: hidden;
     }
 
     .wave-container svg {
       position: absolute;
-      bottom: 0;
+      bottom: -1px;
       width: 200%;   /* 좌우 이동을 위해 화면의 2배 너비 */
       height: 100%;
+      will-change: transform;
     }
 
     .wave-svg-1 {
@@ -259,20 +279,20 @@
     }
 
     /*
-     * 파도 흔들림 — 좌우로平移 이동
+     * 파도 흔들림 — 좌우로平移 이동 (GPU 가속 적용)
      * 레이어마다 이동 거리와 주기를 다르게 해서 자연스러운 중첩 효과
      */
     @keyframes waveMove1 {
-      0%, 100% { transform: translateX(0); }
-      50% { transform: translateX(-15%); }
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      50% { transform: translate3d(-15%, 0, 0); }
     }
     @keyframes waveMove2 {
-      0%, 100% { transform: translateX(0); }
-      50% { transform: translateX(-25%); }
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      50% { transform: translate3d(-25%, 0, 0); }
     }
     @keyframes waveMove3 {
-      0%, 100% { transform: translateX(0); }
-      50% { transform: translateX(-10%); }
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      50% { transform: translate3d(-10%, 0, 0); }
     }
 
     /* =============================================
@@ -286,15 +306,15 @@
      */
     .text {
       position: relative;
-      z-index: 1;
-      font-size: clamp(1.2rem, 3.5vw, 3rem);  /* 반응형: 최소 1.2rem ~ 최대 3rem */
+      z-index: 10;
+      font-size: clamp(1rem, 5vw, 2rem);  /* 반응형 텍스트 크기 */
       font-weight: 700;
       letter-spacing: 0.15em;              /* 자간 넓게 */
       background: linear-gradient(
         135deg,
-        #ffffff 0%,
-        #a8a8a8 50%,
-        #ffffff 100%
+        var(--text-main) 0%,
+        var(--text-dim) 50%,
+        var(--text-main) 100%
       );
       background-size: 200% 200%;
       -webkit-background-clip: text;
@@ -302,6 +322,7 @@
       background-clip: text;
       animation: shimmer 4s ease-in-out infinite;
       text-transform: lowercase;
+      text-shadow: 0 10px 20px rgba(0,0,0,0.3);
     }
 
     /* 그라데이션 좌우 이동 — 빛이 반사되어 지나가는 효과 */
@@ -314,32 +335,32 @@
 <body>
 
   <!-- 상단 노을 배경 (붉은-주황-보라 그라데이션) -->
-  <div class="sunset"></div>
+  <div class="sunset" role="img" aria-label="sunset glow background"></div>
 
   <!-- 떠다니는 구름 3개 (각각 다른 높이·크기·속도) -->
-  <div class="cloud cloud-1"></div>
-  <div class="cloud cloud-2"></div>
-  <div class="cloud cloud-3"></div>
+  <div class="cloud cloud-1" role="img" aria-label="floating cloud"></div>
+  <div class="cloud cloud-2" role="img" aria-label="floating cloud"></div>
+  <div class="cloud cloud-3" role="img" aria-label="floating cloud"></div>
 
   <!-- 상단 중앙 해 (골드 그라데이션 원 + 글로우) -->
-  <div class="sun"></div>
+  <div class="sun" role="img" aria-label="glowing sun"></div>
 
-  <!-- 화면 중앙 텍스트 -->
-  <p class="text">hello! a-o-a</p>
+  <!-- 화면 중앙 텍스트 (시맨틱 헤딩으로 보완) -->
+  <h1 class="text">hello! a-o-a</h1>
 
   <!-- 하단 SVG 파도 3중 레이어 -->
-  <div class="wave-container">
+  <div class="wave-container" role="img" aria-label="animated ocean waves">
     <!-- 파도 1 — 가장 진한 층, 가장 빠름 (4초) -->
     <svg class="wave-svg-1" viewBox="0 0 1440 320" preserveAspectRatio="none">
-      <path fill="rgba(100,160,220,0.25)" d="M0,160L60,150C120,139,240,117,360,117C480,117,600,139,720,160C840,181,960,203,1080,192C1200,181,1320,139,1380,117L1440,96L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+      <path fill="var(--wave-1)" d="M0,160L60,150C120,139,240,117,360,117C480,117,600,139,720,160C840,181,960,203,1080,192C1200,181,1320,139,1380,117L1440,96L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
     </svg>
     <!-- 파도 2 — 중간층, 중간 속도 (6초) -->
     <svg class="wave-svg-2" viewBox="0 0 1440 320" preserveAspectRatio="none">
-      <path fill="rgba(80,140,190,0.2)" d="M0,224L80,213C160,203,320,181,480,187C640,192,800,224,960,219C1120,213,1280,171,1360,149L1440,128L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
+      <path fill="var(--wave-2)" d="M0,224L80,213C160,203,320,181,480,187C640,192,800,224,960,219C1120,213,1280,171,1360,149L1440,128L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
     </svg>
     <!-- 파도 3 — 가장 옅은 층, 가장 느림 (8초) -->
     <svg class="wave-svg-3" viewBox="0 0 1440 320" preserveAspectRatio="none">
-      <path fill="rgba(60,120,160,0.15)" d="M0,256L48,251C96,245,192,235,288,213C384,192,480,160,576,171C672,181,768,235,864,245C960,256,1056,224,1152,203C1248,181,1344,171,1392,165L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+      <path fill="var(--wave-3)" d="M0,256L48,251C96,245,192,235,288,213C384,192,480,160,576,171C672,181,768,235,864,245C960,256,1056,224,1152,203C1248,181,1344,171,1392,165L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
     </svg>
   </div>
 
