@@ -18,6 +18,7 @@
       --page-bg: #1a1a1a;
       --text-primary: #ffffff;
       --text-muted: #a8a8a8;
+      --text-soft: #d6d6d6;
 
       --sun-core: #fff8dc;
       --sun-mid: #ffd700;
@@ -48,6 +49,13 @@
       --wave-duration-2: 6s;
       --wave-duration-3: 8s;
       --text-shimmer-duration: 4s;
+      --text-panel-bg: rgba(255, 255, 255, 0.1);
+      --text-panel-border: rgba(255, 255, 255, 0.2);
+      --text-panel-shadow: rgba(0, 0, 0, 0.4);
+      --aurora-a: rgba(255, 200, 120, 0.16);
+      --aurora-b: rgba(120, 180, 255, 0.16);
+      --mist-a: rgba(255, 255, 255, 0.03);
+      --mist-b: rgba(255, 190, 120, 0.06);
     }
 
     * {
@@ -80,6 +88,81 @@
       position: absolute;
       inset: 0;
       pointer-events: none;
+    }
+
+    .sky-glow {
+      position: absolute;
+      top: -22%;
+      left: 50%;
+      width: min(680px, 64vw);
+      aspect-ratio: 1 / 1;
+      transform: translate3d(-45%, 0, 0);
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        var(--sun-core) 0%,
+        rgba(255, 255, 255, 0.15) 15%,
+        rgba(255, 255, 255, 0.02) 38%,
+        transparent 62%
+      );
+      filter: blur(24px);
+      animation: glow-shift 18s ease-in-out infinite;
+      mix-blend-mode: screen;
+      opacity: 0.75;
+      will-change: transform, opacity;
+    }
+
+    .aurora {
+      position: absolute;
+      width: min(56vw, 500px);
+      height: min(36vw, 320px);
+      border-radius: 56% 44% 52% 48%;
+      opacity: 0.45;
+      filter: blur(28px);
+      will-change: transform, opacity;
+      animation: dream-float 14s ease-in-out infinite;
+    }
+
+    .aurora-1 {
+      top: 20%;
+      left: -10%;
+      background: radial-gradient(circle at 35% 35%, var(--aurora-a) 0%, transparent 70%);
+      animation-duration: 19s;
+      animation-delay: -4s;
+    }
+
+    .aurora-2 {
+      top: 12%;
+      right: -14%;
+      background: radial-gradient(circle at 65% 45%, var(--aurora-b) 0%, transparent 70%);
+      animation-duration: 24s;
+      animation-delay: -9s;
+    }
+
+    .mist {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 50%;
+      filter: blur(36px);
+      mix-blend-mode: screen;
+    }
+
+    .mist-1 {
+      top: 38%;
+      left: 8%;
+      width: min(28vw, 260px);
+      height: min(18vw, 165px);
+      background: radial-gradient(circle, var(--mist-a) 0%, transparent 65%);
+      animation: mist-flow 26s linear infinite;
+    }
+
+    .mist-2 {
+      top: 16%;
+      right: 14%;
+      width: min(32vw, 300px);
+      height: min(20vw, 190px);
+      background: radial-gradient(circle, var(--mist-b) 0%, transparent 62%);
+      animation: mist-flow 22s linear infinite reverse;
     }
 
     .sunset {
@@ -194,6 +277,22 @@
       position: relative;
       z-index: 1;
       padding: 2rem;
+      width: min(100%, 980px);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      text-align: center;
+    }
+
+    .content-card {
+      width: 100%;
+      padding: 0;
+      border: none;
+      background: none;
+      box-shadow: none;
+      animation: none;
     }
 
     .title {
@@ -215,6 +314,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shimmer var(--text-shimmer-duration) ease-in-out infinite;
+      margin: 0;
     }
 
     .waves {
@@ -353,6 +453,44 @@
       }
     }
 
+    @keyframes glow-shift {
+      0%,
+      100% {
+        transform: translate3d(-45%, 0, 0) scale(1);
+      }
+      50% {
+        transform: translate3d(-52%, -2%, 0) scale(1.04);
+      }
+    }
+
+    @keyframes dream-float {
+      0%,
+      100% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+      }
+
+      50% {
+        transform: translate3d(-2%, 3%, 0) rotate(-1.5deg);
+      }
+    }
+
+    @keyframes mist-flow {
+      0% {
+        transform: translate3d(0, 0, 0);
+        opacity: 0.22;
+      }
+
+      50% {
+        transform: translate3d(7%, -3%, 0);
+        opacity: 0.34;
+      }
+
+      100% {
+        transform: translate3d(0, 0, 0);
+        opacity: 0.22;
+      }
+    }
+
     @keyframes shimmer {
       0%,
       100% {
@@ -373,12 +511,23 @@
         transition-duration: 0.01ms !important;
       }
     }
+
+    @media (max-width: 900px) {
+      .scene__content {
+        gap: 0.85rem;
+      }
+    }
   </style>
 </head>
 <body>
   <main class="scene" aria-label="Animated a-o-a landing page">
     <div class="scene__decor" aria-hidden="true">
       <div class="sunset"></div>
+      <div class="sky-glow"></div>
+      <div class="aurora aurora-1"></div>
+      <div class="aurora aurora-2"></div>
+      <div class="mist mist-1"></div>
+      <div class="mist mist-2"></div>
 
       <div class="cloud cloud-1"></div>
       <div class="cloud cloud-2"></div>
